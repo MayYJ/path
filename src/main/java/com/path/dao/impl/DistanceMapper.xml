@@ -98,7 +98,7 @@
     </foreach>
   </insert>
   <select id="selectNullNode" resultType="com.path.model.Distance" parameterType="java.lang.Integer">
-    SELECT d_id as dId,start_id as startId,end_id as endId from distance where standard_dis is NULL or standard_time is NULL limit 1;
+    SELECT d_id as dId,start_id as startId,end_id as endId from distance where standard_dis='0' or standard_time='0' limit 1;
   </select>
 
 <select id="selectCenterOrServiceAddress" resultType="java.lang.String" parameterType="java.lang.String">

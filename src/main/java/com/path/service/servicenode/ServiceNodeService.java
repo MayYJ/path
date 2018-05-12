@@ -24,4 +24,6 @@ public interface ServiceNodeService {
     boolean updateAdvance(List<ServiceNode> list);
     List<ServiceNode> selectAllServiceNodeAddress(String questionId);
 
+    int getServiceNodeCount();
+
 }

@@ -60,4 +60,9 @@ public class ServiceNodeServiceImpl implements ServiceNodeService {
         List<ServiceNode> serviceNodes = serviceNodeMapper.selectAllServiceNodeAddress(questionId);
         return serviceNodes;
     }
+
+    @Override
+    public int getServiceNodeCount() {
+        return serviceNodeMapper.getServiceNodeCount();
+    }
 }

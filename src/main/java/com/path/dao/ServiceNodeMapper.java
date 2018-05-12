@@ -27,4 +27,6 @@ public interface ServiceNodeMapper {
 
     boolean deleteAllServiceNode();
 
+    int getServiceNodeCount();
+
 }

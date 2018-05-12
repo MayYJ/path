@@ -23,4 +23,5 @@ public interface CenterNodeService {
     boolean updateAdvance(List<CenterNode> list);
     List<CenterNode> selectAllCenterNodeAddress(String questionId);
 
+    int getCenterNodeCount();
 }

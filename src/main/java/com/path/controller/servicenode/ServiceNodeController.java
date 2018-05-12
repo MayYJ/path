@@ -3,6 +3,7 @@ package com.path.controller.servicenode;
 import com.alibaba.fastjson.JSONObject;
 import com.path.model.CenterNode;
 import com.path.model.ServiceNode;
+import com.path.service.centernode.CenterNodeService;
 import com.path.service.servicenode.ServiceNodeService;
 import com.path.util.JsonUtil;
 import com.path.util.MapUtil;
@@ -25,6 +26,9 @@ import java.util.stream.Collectors;
 public class ServiceNodeController {
     @Resource
     private ServiceNodeService serviceNodeService;
+
+    @Resource
+    private CenterNodeService centerNodeService;
 
 
     /**
@@ -65,5 +69,12 @@ public class ServiceNodeController {
             Map map = MapUtil.toMap(403, "添加失败", result);
             JsonUtil.toJSON(map);
         }
+    }
+
+    @RequestMapping("getNodesCount")
+    public void getAllNodes(){
+        int nodeNum = serviceNodeService.getServiceNodeCount() + centerNodeService.getCenterNodeCount();
+        Map map = MapUtil.toMap(200, "添加成功", nodeNum);
+        JsonUtil.toJSON(map);
     }
 }

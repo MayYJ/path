@@ -188,4 +188,9 @@
   <delete id="deleteAllServiceNode">
     DELETE FROM servicenode
   </delete>
+
+  <select id="getServiceNodeCount" resultType="java.lang.Integer">
+    SELECT count(s_id)
+    FROM servicenode;
+  </select>
 </mapper>

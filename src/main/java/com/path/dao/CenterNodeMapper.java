@@ -28,4 +28,6 @@ public interface CenterNodeMapper {
 
     boolean deleteAllCenterNodes();
 
+    int getConterNodeCount();
+
 }

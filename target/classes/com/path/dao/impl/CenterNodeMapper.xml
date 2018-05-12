@@ -189,4 +189,9 @@
   <delete id="deleteAllCenterNodes">
     DELETE FROM centernode
   </delete>
+
+  <select id="getConterNodeCount" resultType="java.lang.Integer">
+    SELECT count(c_id)
+    FROM centernode;
+  </select>
 </mapper>

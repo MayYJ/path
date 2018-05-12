@@ -61,4 +61,11 @@ public class CenterNodeServiceImpl implements CenterNodeService {
         List<CenterNode> centerNodes = centerNodeMapper.selectAllCenterNodeAddress(questionId);
         return centerNodes;
     }
+
+    @Override
+    public int getCenterNodeCount() {
+        return centerNodeMapper.getConterNodeCount();
+    }
+
+
 }

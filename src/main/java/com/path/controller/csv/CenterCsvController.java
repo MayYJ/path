@@ -30,7 +30,6 @@ public class CenterCsvController {
     private String message = null;
     @Resource
     private CsvService<CenterNode> csvService;
-    DefaultPointcutAdvisor
 
     /**
      * 检查中心点数据是否合理
@@ -82,6 +81,7 @@ public class CenterCsvController {
      */
     @RequestMapping("importCenterNode")
     public void insertCenterNode(HttpServletRequest request, @RequestParam("info-fileselect") MultipartFile multipartFile) {
+        System.out.println("njknjmk");
         String fileName = multipartFile.getOriginalFilename();
         //Integer questionId = (Integer) request.getSession().getAttribute("questionId");
         Integer questionId = 1;

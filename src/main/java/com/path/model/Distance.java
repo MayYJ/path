@@ -33,10 +33,10 @@ public class Distance extends DistanceKey {
     /**
      * 两点之间距离
      */
-    private Integer standardDis;
+    private int standardDis;
     /**
      * 两点需要的时间
      */
-    private Integer standardTime;
+    private int standardTime;
 
 }

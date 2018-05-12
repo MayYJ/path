@@ -36,7 +36,10 @@
 </div>
 <!--提示框-->
 <div class="tips" id="tips" style="display: none">
-    <h1>提示</h1>
+    <div style="position: relative;">
+        <h1>提示</h1>
+        <span id="close" style="position:absolute;right:6px;display: block;top: 2px;color: #fff;cursor: pointer">X</span>
+    </div>
     <p class="tip-cont" id="tip-cont">提示内容</p>
 </div>
 <!-- 进度部分 -->
@@ -83,10 +86,10 @@
             <h2 class="info-panel-tit">服务点信息导入</h2>
             <div class="info-panel-cont">
                 <div class="info-file"><a href="./data/service.csv" download="service.csv">下载模板文件：service.csv</a>
-                    <form action="/path/csv/importServiceNode.do" method="post" enctype="multipart/form-data">
+                    <form>
                         <input type="file" name="info-fileselect" class="info-fileselect"
                                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
-                        <input type="submit" name="info-fileadd" class="info-fileadd" value="上传" id="serviceluru"/>
+                        <input type="button" name="info-fileadd" class="info-fileadd" value="上传" id="serviceluru"/>
                     </form>
                 </div>
                 <!--<div class="info-search">-->
@@ -101,10 +104,10 @@
             <div class="info-panel-cont">
                 <!--发送文件-->
                 <div class="info-file"><a href="./data/car.csv" download="car.csv">下载模板文件：car.csv</a>
-                    <form action="/path/csv/importVahicle.do" method="post" enctype="multipart/form-data"><input
+                    <form ><input
                             type="file" name="info-fileselect" class="info-fileselect"
                             accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/><input
-                            type="submit" name="info-fileadd" class="info-fileadd" value="上传" id="carluru"/></form>
+                            type="button" name="info-fileadd" class="info-fileadd" value="上传" id="carluru"/></form>
                 </div>
                 <!--<div class="info-search">-->
                     <!--<input type="text" name="file-search-text" placeholder="查询所需车辆是否添加" class="file-search-text"><input-->
@@ -566,7 +569,15 @@
     //     })
     //     return p;
     // }
+    let tips = document.getElementById('tips');
+    let close = document.getElementById('close');
     var tipcont = document.getElementById("tip-cont");
+
+    //提示框关闭
+    close.onclick = () => {
+        tips.style.display = 'none';
+        tipcont.innerText = ' ';
+    };
     //新思路：请求一次，写入一次时间和距离
     //step1：请求时间距离表中一条记录的起点和终点
     function startpoint() {
@@ -611,6 +622,7 @@
         return p;
     }
 
+    let qqqw = 0;
 
     //step2:将时间距离传给后台
     function writeinsql(point) {
@@ -628,6 +640,10 @@
                 data["endId"] = point[0].data.endId;
                 data["standardTime"] = T;
                 data["standardDis"] = D;
+                // var ss = "起点："+data["startId"] + " 终点：" + data["endId"] + " 两地间隔时间：" + data["standardTime"] + " 两地间隔距离：" + data["standardDis"];
+                // let info = document.createElement('p');
+                // info.innerText = ss;
+                // tipcont.appendChild(info);
                 var url = "distance/updatetimeanddis.do";
                 var postData = "";
                 var tmp = "";
@@ -645,10 +661,10 @@
                     if (obj1.readyState == 4 && obj1.status == 200) { // readyState == 4说明请求已完成
                         //console.log(JSON.parse(obj.responseText));
                         //console.log(obj.responseText);
-                        var data = JSON.parse(obj.responseText);
-                        tipcont.innerText = data.message;
-                        console.log(data);
-
+                        resolve(data);
+                        // var data = JSON.parse(obj1.responseText);
+                        // tipcont.innerText += '</br>' + data.message;
+                        // console.log(data);
                     }
                 };
                 obj1.send(postData);
@@ -657,10 +673,21 @@
                 renderOptions: {map: map},
                 onSearchComplete: searchComplete,
                 onPolylinesSet: function () {
+
                 }
             });
             //transit.search(responseText.data.startAddress, responseText.data.endAddress);
             transit.search(point[1], point[2]);
+        })
+        return p;
+    }
+
+    function appendTip(data) {
+        let p = new Promise(function (resolve, reject) {
+            var ss = "起点："+data["startId"] + " 终点：" + data["endId"] + " 两地间隔时间：" + data["standardTime"] + " 两地间隔距离：" + data["standardDis"];
+            let info = document.createElement('p');
+            info.innerText = ss;
+            tipcont.appendChild(info);
         })
         return p;
     }
@@ -675,17 +702,43 @@
     //     });
     // }
 
-    starttimedis.onclick = function () {
-        var t = document.getElementById("start-timedis");
-        t.style.backgroundColor = "#ccc";
-        t.setAttribute("disabled", true);
-        startpoint().then(function (data) {
-            return endpoint(data);
-        }).then(function(data){
-            writeinsql(data);
+    (function() {
+        $.ajax({
+            type: 'get',
+            dataType: 'json',
+            url: 'servicenode/getNodesCount.do',
+            success:function(json) {
+                qqqw = json.data;
+            },
+            error:function(json) {
+                console.log(json);
+            }
         })
+    })()
 
+    var t = document.getElementById("start-timedis");
+    let con = 0;
+    //点击传递
+    starttimedis.onclick = function () {
+        t.style.backgroundColor = "#ccc";
+        t.setAttribute("disabled", "disabled");
+        tips.style.display = 'block';
+        let clearT =  setInterval(function() {
+            startpoint().then(function (data) {
+                return endpoint(data);
+            }).then(function(data){
+                return writeinsql(data);
+            }).then(function(data){
+                appendTip(data);
+                con += 1;
+                if (con >= qqqw) {
+                    clearInterval(clearT);
+                }
+            })
+        },2000);
     }
+
+
     var startcenter = document.getElementById("start-center");
     startcenter.onclick = function () {
         var s = document.getElementById("start-center");
@@ -978,54 +1031,120 @@
     var centerluru = document.getElementById("centerluru");
     var serviceluru = document.getElementById("serviceluru");
     var carluru = document.getElementById("carluru");
+    let file = document.getElementsByClassName('info-fileselect');
     centerluru.onclick = function () {
-        tipcont.innerText = "中心点数据上传中，请稍后..."
-        var postData = 1;
-        var url = "path/csv/importCenterNode.do";
-        var obj = new XMLHttpRequest();  // XMLHttpRequest对象用于在后台与服务器交换数据
-        obj.open('POST', url, true);
-        obj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        obj.onreadystatechange = function () {
-            if (obj.readyState == 4 && obj.status == 200) { // readyState == 4说明请求已完成
-                var data = JSON.parse(obj.responseText);
-                alert(data.message);
-                tipcont.innerHTML = data.message;
-                console.log(data);
+        tips.style.display = 'block';
+        // let file = document.getElementsByClassName('info-fileselect')[0].files[0];
+        // let postData = new FormData();
+        // postData.append('info-fileselect',file)
+        // tipcont.innerText = "中心点数据上传中，请稍后..."
+        // var url = "csv/importCenterNode.do";
+        // var obj = new XMLHttpRequest();  // XMLHttpRequest对象用于在后台与服务器交换数据
+        // obj.open('POST', url, true);
+        // obj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        // obj.onreadystatechange = function () {
+        //     if (obj.readyState == 4 && obj.status == 200) { // readyState == 4说明请求已完成
+        //         var data = JSON.parse(obj.responseText);
+        //         alert(data.message);
+        //         tipcont.innerHTML = data.message;
+        //         console.log(data);
+        //     }
+        // };
+        // obj.send(postData);
+        let formData = new FormData();
+        formData.append('info-fileselect',file[0].files[0])
+        $.ajax({
+            url:'csv/importCenterNode.do',
+            dataType:'json',
+            type:'post',
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            data:formData,
+            success:function(json) {
+                tipcont.innerHTML = json.message;
+                console.log(json);
+            },
+            error:function(json){
+                console.log(json);
             }
-        };
-        obj.send(postData);
+        })
     }
     serviceluru.onclick = function () {
+        tips.style.display = 'block';
         tipcont.innerText = "中心点数据上传中，请稍后..."
-        var postData = 1;
-        var url = "path/csv/importServiceNode.do";
-        var obj = new XMLHttpRequest();  // XMLHttpRequest对象用于在后台与服务器交换数据
-        obj.open('POST', url, true);
-        obj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        obj.onreadystatechange = function () {
-            if (obj.readyState == 4 && obj.status == 200) { // readyState == 4说明请求已完成
-                var data = JSON.parse(obj.responseText);
-                tipcont.innerText = data.message;
-                console.log(data);
+        let formData = new FormData();
+        formData.append('info-fileselect',file[1].files[0])
+        $.ajax({
+            url:'csv/importServiceNode.do',
+            dataType:'json',
+            type:'post',
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            data:formData,
+            success:function(json) {
+                tipcont.innerHTML = json.message;
+                console.log(json);
+            },
+            error:function(json){
+                tipcont.innerHTML = json.message;
+                console.log(json);
             }
-        };
-        obj.send(postData);
+        })
+        // var postData = 1;
+        // var url = "path/csv/importServiceNode.do";
+        // var obj = new XMLHttpRequest();  // XMLHttpRequest对象用于在后台与服务器交换数据
+        // obj.open('POST', url, true);
+        // obj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        // obj.onreadystatechange = function () {
+        //     if (obj.readyState == 4 && obj.status == 200) { // readyState == 4说明请求已完成
+        //         var data = JSON.parse(obj.responseText);
+        //         tipcont.innerText = data.message;
+        //         console.log(data);
+        //     }
+        // };
+        // obj.send(postData);
+
     }
     carluru.onclick = function () {
+        tips.style.display = 'block';
         tipcont.innerText = "中心点数据上传中，请稍后..."
-        var postData = 1;
-        var url = "path/csv/importVahicle.do";
-        var obj = new XMLHttpRequest();  // XMLHttpRequest对象用于在后台与服务器交换数据
-        obj.open('POST', url, true);
-        obj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        obj.onreadystatechange = function () {
-            if (obj.readyState == 4 && obj.status == 200) { // readyState == 4说明请求已完成
-                var data = JSON.parse(obj.responseText);
-                tipcont.innerText = data.message;
-                console.log(data);
+        let formData = new FormData();
+        formData.append('info-fileselect',file[2].files[0])
+        $.ajax({
+            url:'csv/importVahicle.do',
+            dataType:'json',
+            type:'post',
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            data:formData,
+            success:function(json) {
+                tipcont.innerHTML = json.message;
+                console.log(json);
+            },
+            error:function(json){
+                tipcont.innerHTML = json.message;
+                console.log(json);
             }
-        };
-        obj.send(postData);
+        })
+        // var postData = 1;
+        // var url = "path/csv/importVahicle.do";
+        // var obj = new XMLHttpRequest();  // XMLHttpRequest对象用于在后台与服务器交换数据
+        // obj.open('POST', url, true);
+        // obj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        // obj.onreadystatechange = function () {
+        //     if (obj.readyState == 4 && obj.status == 200) { // readyState == 4说明请求已完成
+        //         var data = JSON.parse(obj.responseText);
+        //         tipcont.innerText = data.message;
+        //         console.log(data);
+        //     }
+        // };
+        // obj.send(postData);
     }
 
     var clearroute = document.getElementById("clear-route");
