@@ -5,10 +5,9 @@ import com.path.model.Distance;
 import com.path.model.DistanceKey;
 import com.path.model.LaAndLngTemp;
 import com.path.service.distance.DistanceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.security.x509.DistributionPointName;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -16,8 +15,10 @@ import java.util.List;
  */
 @Service
 public class DistanceServiceImpl implements DistanceService{
-    @Resource
+
+    @Autowired
     private DistanceMapper distanceMapper;
+
     @Override
     public int deleteByPrimaryKey(DistanceKey key) {
         return 0;
@@ -84,6 +85,11 @@ public class DistanceServiceImpl implements DistanceService{
     }
 
     @Override
+    public boolean deleteDistanceData() {
+        return distanceMapper.deleteDistanceData();
+    }
+
+    @Override
     public List<String> produceAllWay(Integer questionId) {
 
         return distanceMapper.produceAllWay(questionId);
@@ -91,7 +97,6 @@ public class DistanceServiceImpl implements DistanceService{
 
     @Override
     public int checkRemainCount(int i) {
-         int remainCount = distanceMapper.checkRemainCount(i);
-         return remainCount;
+        return distanceMapper.checkRemainCount(i);
     }
 }

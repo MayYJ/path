@@ -121,4 +121,8 @@
   <select id = "selectIfNull" resultMap="BaseResultMap" parameterType="java.lang.Integer">
     SELECT count(d_id) AS d_id FROM distance WHERE  d_id = #{questionId} limit 1;
   </select>
+
+  <delete id="deleteDistanceData">
+    delete from distance
+  </delete>
 </mapper>

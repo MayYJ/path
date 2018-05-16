@@ -32,4 +32,6 @@ public interface DistanceMapper {
     String selectCenterOrServiceAddress(String startId);
 
     LaAndLngTemp selectCenterOrServiceLaAndLng(String address);
+
+    boolean deleteDistanceData();
 }

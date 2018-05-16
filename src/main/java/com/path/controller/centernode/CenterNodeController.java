@@ -4,18 +4,13 @@ import com.path.model.CenterNode;
 import com.path.service.centernode.CenterNodeService;
 import com.path.util.JsonUtil;
 import com.path.util.MapUtil;
-import com.sdicons.json.model.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
 /**
  * @author demo
@@ -23,7 +18,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("centernode")
 public class CenterNodeController {
-    @Resource
+    @Autowired
     private CenterNodeService centerNodeService;
 
     /**
@@ -64,7 +59,5 @@ public class CenterNodeController {
         }
 
     }
-
-
 
 }

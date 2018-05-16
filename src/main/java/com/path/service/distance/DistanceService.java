@@ -64,4 +64,6 @@ public interface DistanceService {
     String selectCenterOrServiceAddress(String startId);
 
     LaAndLngTemp selectCenterOrServiceLaAndLng(String s);
+
+    boolean deleteDistanceData();
 }

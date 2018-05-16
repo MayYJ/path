@@ -22,6 +22,9 @@
         #map img {
             max-width: inherit;
         }
+        #tips {
+            height: 300px;
+        }
     </style>
     <title>path optimization</title>
 </head>
@@ -221,7 +224,7 @@
     function dis2int(str) {
         var value = 0;
         if (str.indexOf("公里") !== -1) {
-            value = parseFloat(str) * 1000;
+            value = parseInt(parseFloat(str) * 1000);
         } else {
             value = parseInt(str);
         }
@@ -635,7 +638,9 @@
                 var data = {};
                 var plan = results.getPlan(0);
                 var T = time2int(plan.getDuration(true));
+                console.log(T);
                 var D = dis2int(plan.getDistance(true));
+                console.log(D);
                 data["startId"] = point[0].data.startId;
                 data["endId"] = point[0].data.endId;
                 data["standardTime"] = T;
@@ -731,7 +736,7 @@
             }).then(function(data){
                 appendTip(data);
                 con += 1;
-                if (con >= qqqw) {
+                if (con >= qqqw * qqqw) {
                     clearInterval(clearT);
                 }
             })
@@ -1150,9 +1155,10 @@
     var clearroute = document.getElementById("clear-route");
     var cleardatabase = document.getElementById("clear-database");
     clearroute.onclick = function () {
+        tips.style.display = 'block';
         tipcont.innerText = "正在删除路线表和方案表..."
         var postData = 1;
-        var url = "path/csv/importVahicle.do";
+        var url = "route/deleteAllRoutesAndFinalSolutions.do";
         var obj = new XMLHttpRequest();  // XMLHttpRequest对象用于在后台与服务器交换数据
         obj.open('POST', url, true);
         obj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -1166,9 +1172,10 @@
         obj.send(postData);
     }
     cleardatabase.onclick = function () {
+        tips.style.display = 'block';
         tipcont.innerText = "正在删除整个数据库..."
         var postData = 1;
-        var url = "path/csv/importVahicle.do";
+        var url = "global/deleteAllData.do";
         var obj = new XMLHttpRequest();  // XMLHttpRequest对象用于在后台与服务器交换数据
         obj.open('POST', url, true);
         obj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

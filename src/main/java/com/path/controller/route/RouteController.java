@@ -139,10 +139,10 @@ public class RouteController {
     @RequestMapping("deleteAllRoutesAndFinalSolutions")
     public void deleteAllRoutesAndFinalSolutions(){
         if (!routeService.removeAllRoutesAndFinalSolutions()){
-            Map map = MapUtil.toMap(500, "操作失败", null);
+            Map map = MapUtil.toMap(500, "操作：清空数据表和方案表；状态：失败", null);
             JsonUtil.toJSON(map);
         }else {
-            Map map = MapUtil.toMap(200, "操作成功", null);
+            Map map = MapUtil.toMap(200, "操作：清空数据表和方案表；状态：成功", null);
             JsonUtil.toJSON(map);
         }
     }

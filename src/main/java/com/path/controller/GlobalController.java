@@ -4,6 +4,7 @@ import com.path.model.CenterNode;
 import com.path.model.ServiceNode;
 import com.path.model.Vahicle;
 import com.path.service.csv.CsvService;
+import com.path.service.distance.DistanceService;
 import com.path.service.route.RouteService;
 import com.path.util.JsonUtil;
 import com.path.util.MapUtil;
@@ -27,6 +28,9 @@ public class GlobalController {
     private CsvService<Vahicle> vahicleCsvService;
 
     @Resource
+    private DistanceService distanceService;
+
+    @Resource
     private RouteService routeService;
 
     @RequestMapping("deleteAllData")
@@ -34,11 +38,12 @@ public class GlobalController {
         if (!centerNodeCsvService.deleteData() ||
                 !serviceNodeCsvService.deleteData() ||
                 !vahicleCsvService.deleteData() ||
-                !routeService.removeAllRoutesAndFinalSolutions()){
-            Map map = MapUtil.toMap(200, "操作成功", null);
+                !routeService.removeAllRoutesAndFinalSolutions()||
+                !distanceService.deleteDistanceData()){
+            Map map = MapUtil.toMap(200, "操作：清空整个数据库；状态：失败", null);
             JsonUtil.toJSON(map);
         }else {
-            Map map = MapUtil.toMap(200, "添加成功", null);
+            Map map = MapUtil.toMap(200, "操作：清空整个数据库；状态：成功", null);
             JsonUtil.toJSON(map);
         }
     }
